@@ -1,3 +1,4 @@
+
 class BankUserObject {
   clickCustomerLogin() {
     cy.contains('.btn', 'Customer Login').click();
@@ -26,7 +27,7 @@ class BankUserObject {
     cy.get('[ng-click="deposit()"]').click();
   }
 
-  typeDeposit(amount) {
+  typeWithdraw(amount) {
     cy.get('[placeholder="amount"]').type(amount);
   }
 
@@ -71,6 +72,23 @@ class BankUserObject {
     cy.contains('[ng-hide="noAccount"]', 'Balance')
       .contains('strong', balance)
       .should('be.visible');
+  }
+
+  clickLogoutBtn() {
+    cy.get('[ng-click="byebye()"]')
+      .click();
+  }
+
+  assertLoginUser(name) {
+    cy.contains('.fontBig', name)
+      .should('exist');
+  }
+
+  assertLogoutUser() {
+    cy.get('[ng-click="home()"]')
+      .should('exist');
+    cy.contains('strong', 'XYZ Bank')
+      .should('exist');
   }
 }
 

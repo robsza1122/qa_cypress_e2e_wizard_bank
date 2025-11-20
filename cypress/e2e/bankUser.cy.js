@@ -5,13 +5,12 @@ import BankUserObject from '../support/BankUser.Object';
 const bankUser = new BankUserObject();
 
 describe('Bank User', () => {
-  const depositAmount = `${faker.number.int({ min: 500, max: 1000 })}`;
+  const depositAmount = '5096';
   const withdrawAmount = `${faker.number.int({ min: 50, max: 500 })}`;
-  const balance = depositAmount - withdrawAmount;
-  const user = 'Harry Potter';
-  const accountNumber = '1004';
+  const user = 'Hermoine Granger';
+  const accountNumber = '1001';
 
-  before(() => {
+  beforeEach(() => {
     cy.visit('/');
   });
 
@@ -24,11 +23,12 @@ describe('Bank User', () => {
     bankUser.assertCurrency('Dollar');
 
     bankUser.clickDepositBtn();
-    bankUser.typeDeposit(depositAmount);
+    bankUser.typeWithdraw(withdrawAmount);
     bankUser.submitTransaction();
 
     bankUser.assertDeposit();
-    bankUser.assertAccountBalance(depositAmount);
+    bankUser.assertAccountBalance(
+      (Number(depositAmount) + Number(withdrawAmount)).toString());
 
     bankUser.clickWithdrawalBtn();
     bankUser.assertWithdrawal();
@@ -36,15 +36,15 @@ describe('Bank User', () => {
     bankUser.clickSubmitBtn();
 
     bankUser.assertTransaction();
-    bankUser.assertAccountBalance(balance);
+    bankUser.assertAccountBalance(depositAmount);
   });
 
   it('should provide ability to logout user', () => {
     bankUser.clickCustomerLogin();
     bankUser.selectUser(user);
     bankUser.clickLoginBtn();
-
-    bankUser.assertAccountNumber(accountNumber);
-    bankUser.assertCurrency('Dollar');
+    bankUser.assertLoginUser(user);
+    bankUser.clickLogoutBtn();
+    bankUser.assertLogoutUser();
   });
 });

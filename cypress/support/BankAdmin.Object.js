@@ -45,33 +45,29 @@ class BankAdminObject {
       .select(currency);
   }
 
-  assertCreatedUser(firstName, lastName, postCode) {
-    cy.get('.ng-binding')
-      .should('contain', firstName);
-    cy.get('.ng-binding')
-      .should('contain', lastName);
-    cy.get('.ng-binding')
-      .should('contain', postCode);
+  assertCreatedUserAndOpenAccountForUser(
+    firstName, lastName, postCode, usersCount, isAccount) {
+    cy.get(`tbody > :nth-child(${usersCount}) > :nth-child(1)`)
+      .should('have.text', firstName);
+    cy.get(`tbody > :nth-child(${usersCount}) > :nth-child(2)`)
+      .should('have.text', lastName);
+    cy.get(`tbody > :nth-child(${usersCount}) > :nth-child(3)`)
+      .should('have.text', postCode);
+    if (isAccount) {
+      cy.get(`tbody > :nth-child(${usersCount}) > :nth-child(4)`)
+        .should('contain', String(1010 + usersCount));
+    }
   }
 
-  assertDeletedUser(firstName, lastName, postCode) {
+  assertDeletedUser(firstName, lastName, postCode, usersCount) {
     cy.get('.ng-binding')
       .should('not.contain', firstName);
     cy.get('.ng-binding')
       .should('not.contain', lastName);
     cy.get('.ng-binding')
       .should('not.contain', postCode);
-  }
-
-  assertOpenAccountForUser(firstName, lastName, postCode, account) {
     cy.get('.ng-binding')
-      .should('contain', firstName);
-    cy.get('.ng-binding')
-      .should('contain', lastName);
-    cy.get('.ng-binding')
-      .should('contain', postCode);
-    cy.get('.ng-binding')
-      .should('contain', account);
+      .should('not.have.text', String(1010 + usersCount + 1));
   }
 }
 

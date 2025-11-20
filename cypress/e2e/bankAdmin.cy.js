@@ -1,5 +1,6 @@
 const { faker } = require('@faker-js/faker');
 const BankAdminObject = require('../support/BankAdmin.Object');
+const countUsers = require('../support/countUsers');
 
 const bankAdmin = new BankAdminObject();
 
@@ -20,14 +21,26 @@ describe('Bank Admin', () => {
     bankAdmin.typeUserData('Post Code', postCode);
     bankAdmin.clickSubmitBtn();
     bankAdmin.clickShowCustomerBtn();
-    bankAdmin.assertCreatedUser(firstName, lastName, postCode);
+    countUsers();
+    cy.get('@users').then((usersCount) => {
+      bankAdmin.assertCreatedUserAndOpenAccountForUser(
+        firstName, lastName, postCode, usersCount, false);
+    });
+
     bankAdmin.clickOpenAccountBtn();
     bankAdmin.selectUser(`${firstName} ${lastName}`);
     bankAdmin.selectCurrency('Dollar');
     bankAdmin.clickSubmitBtn();
     bankAdmin.clickShowCustomerBtn();
-    bankAdmin.assertOpenAccountForUser(firstName, lastName, postCode, '1006');
+    cy.get('@users').then((usersCount) => {
+      bankAdmin
+        .assertCreatedUserAndOpenAccountForUser(
+          firstName, lastName, postCode, usersCount, true);
+    });
+
     bankAdmin.clickDeleteUser();
-    bankAdmin.assertDeletedUser(firstName, lastName, postCode);
+    cy.get('@users').then((usersCount) => {
+      bankAdmin.assertDeletedUser(firstName, lastName, postCode, usersCount);
+    });
   });
 });
