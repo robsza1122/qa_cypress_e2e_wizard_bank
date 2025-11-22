@@ -1,11 +1,20 @@
 
 class BankUserObject {
+  get balanceSelector() {
+    return cy.get('.borderM > :nth-child(3) > :nth-child(2)');
+  }
+
   clickCustomerLogin() {
     cy.contains('.btn', 'Customer Login').click();
   }
 
   selectUser(user) {
     cy.get('[name="userSelect"]').select(user);
+  }
+
+  selectAccount(account) {
+    cy.get('[ng-change="selectAcct()"]')
+      .select(account);
   }
 
   clickLoginBtn() {
@@ -27,8 +36,10 @@ class BankUserObject {
     cy.get('[ng-click="deposit()"]').click();
   }
 
-  typeWithdraw(amount) {
-    cy.get('[placeholder="amount"]').type(amount);
+  typeAmount(amount) {
+    // eslint-disable-next-line cypress/unsafe-to-chain-command
+    cy.get('[placeholder="amount"]')
+      .type(amount);
   }
 
   submitTransaction() {
@@ -40,12 +51,26 @@ class BankUserObject {
       .should('contain', 'Transaction successful');
   }
 
+  assertDepositInTransactions(transactions, deposit) {
+    cy.get(`#anchor${transactions - 1} > :nth-child(2)`)
+      .should('contain', deposit);
+    cy.get(`#anchor${transactions - 1} > :nth-child(3)`)
+      .should('contain', 'Credit');
+  }
+
+  assertWithdrawalsInTransactions(transactions, withdrawal) {
+    cy.get(`#anchor${transactions - 1} > :nth-child(2)`)
+      .should('contain', withdrawal);
+    cy.get(`#anchor${transactions - 1} > :nth-child(3)`)
+      .should('contain', 'Debit');
+  }
+
   assertDeposit() {
     cy.get('[ng-show="message"]')
       .should('contain', 'Deposit Successful');
   }
 
-  assertAccountBalance(amount) {
+  assertTransactionPage(amount) {
     cy.contains('[ng-hide="noAccount"]', 'Balance')
       .contains('strong', amount)
       .should('be.visible');
@@ -53,6 +78,15 @@ class BankUserObject {
 
   clickWithdrawalBtn() {
     cy.get('[ng-click="withdrawl()"]').click();
+  }
+
+  clickBackBtn() {
+    cy.get('[ng-click="back()"]')
+      .click();
+  }
+
+  clickTransactionsBtn() {
+    cy.get('[ng-click="transactions()"]').click();
   }
 
   assertWithdrawal() {

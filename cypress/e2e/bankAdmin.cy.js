@@ -1,6 +1,6 @@
 const { faker } = require('@faker-js/faker');
 const BankAdminObject = require('../support/BankAdmin.Object');
-const countUsers = require('../support/countUsers');
+const countUsers = require('../support/functions');
 
 const bankAdmin = new BankAdminObject();
 
